@@ -1,0 +1,212 @@
+{
+    "_id": "581274e5e8841a5d34292af1",
+    "state": "completed",
+    "user": [
+        {
+            "name": "Robert Marsh",
+            "position": 9,
+            "color": "yellow",
+            "cash": 4092
+        },
+        {
+            "name": "Margarita Day",
+            "position": 0,
+            "color": "green",
+            "cash": 17933
+        },
+        {
+            "name": "Latoya Middleton",
+            "position": 4,
+            "color": "red",
+            "cash": 25511
+        },
+        {
+            "name": "Barron Hess",
+            "position": 4,
+            "color": "blue",
+            "cash": 6179
+        }
+    ],
+    "space": [
+        {
+            "name": "GO",
+            "type": "go",
+            "price": 0,
+            "rent": 0,
+            "color": "",
+            "star": 1,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "GO To Jail",
+            "type": "go_to_jail",
+            "price": 0,
+            "rent": 0,
+            "color": "",
+            "star": 1,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Georgina Pickett",
+            "type": "property",
+            "price": 42718,
+            "rent": 97267,
+            "color": "orange",
+            "star": 1,
+            "owner": 0
+        },
+        {
+            "name": "JAIL",
+            "type": "jail",
+            "price": 0,
+            "rent": 0,
+            "color": "",
+            "star": 1,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Carney Finley",
+            "type": "property",
+            "price": 64993,
+            "rent": 26557,
+            "color": "green",
+            "star": 1,
+            "owner": 1
+        },
+        {
+            "name": "Parking",
+            "type": "parking",
+            "price": 0,
+            "rent": 0,
+            "color": "",
+            "star": 1,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Lane Mullins",
+            "type": "property",
+            "price": 45467,
+            "rent": 30355,
+            "color": "yellow",
+            "star": 3,
+            "owner": 0
+        },
+        {
+            "name": "Carney Finley",
+            "type": "property",
+            "price": 64993,
+            "rent": 26557,
+            "color": "green",
+            "star": 1,
+            "owner": 1
+        }
+    ]
+}

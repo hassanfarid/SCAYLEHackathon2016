@@ -1,0 +1,27 @@
+{
+    "state": "in-play", //or "waiting_to_join", "completed", "pause"
+    "user": [
+        {
+            "name": "User1",
+            "position": 0, //current player position on board
+            "color": "red", // possible GUI displays for users
+            "cash": 25000 // cash in hand
+        },
+        {
+            "name": "User2",
+            "position": 0,
+            "cash": 25000
+        }
+    ],
+    "space": [
+        {
+            "name": "Pro1",
+            "type" "property", // or "go" "go_to_jail", "jail", "parking"
+            "price": 25000, // applicable to property only
+            "rent": 5000, // applicable to property only
+            "color": "orange", // applicable to property only
+            "star": 1, // applicable to property only
+            "owner": 0 // applicable to property only or 0 - (N-1)
+        }
+    ]
+}
