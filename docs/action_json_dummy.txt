@@ -1,0 +1,6 @@
+{
+	"board_id": "581274e5e8841a5d34292af1",
+	"userAuth": "hand-shake-exchanged-key",
+	"action": "buy",
+	"space": 3
+}

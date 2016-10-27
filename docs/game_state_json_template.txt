@@ -1,4 +1,5 @@
 {
+    "board_id": "generated-GUID",
     "state": "in-play", //or "waiting_to_join", "completed", "pause"
     "user": [
         {

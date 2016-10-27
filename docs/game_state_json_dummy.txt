@@ -1,5 +1,5 @@
 {
-    "_id": "581274e5e8841a5d34292af1",
+    "board_id": "581274e5e8841a5d34292af1",
     "state": "completed",
     "user": [
         {
