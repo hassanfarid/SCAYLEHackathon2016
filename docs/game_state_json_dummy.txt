@@ -1,6 +1,7 @@
 {
     "board_id": "581274e5e8841a5d34292af1",
     "state": "completed",
+    "turn": 0,
     "user": [
         {
             "name": "Robert Marsh",

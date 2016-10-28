@@ -1,6 +1,7 @@
 {
     "board_id": "generated-GUID",
     "state": "in-play", //or "waiting_to_join", "completed", "pause"
+    "turn": 0,
     "user": [
         {
             "name": "User1",
