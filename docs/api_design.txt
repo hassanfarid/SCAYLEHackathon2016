@@ -1,0 +1,9 @@
+API Gateway /commit POST
++ /user
+  - auth user key, -> success/error, server-auth-key
++ /monopoly
+  - /join - game id,  server-auth-key -> success/error, state
+  - /create -  server-auth-key - > success/error, game id, state
+  - /action - game id, server-auth-key,  action -> success/error, state, call-announce-state
++ /stats - total games, active, total users.
++ /recommend - game id, server-auth-key -> success/error, recommendation
