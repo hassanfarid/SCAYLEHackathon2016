@@ -1,30 +1,121 @@
-<ion-view view-title="Dashboard">
-  <ion-content class="padding">
-    <h2>Welcome to Ionic</h2>
-    <p>
-    This is the Ionic starter for tabs-based apps. For other starters and ready-made templates, check out the <a href="http://market.ionic.io/starters" target="_blank">Ionic Market</a>.
-    </p>
-    <p>
-      To edit the content of each tab, edit the corresponding template file in <code>www/templates/</code>. This template is <code>www/templates/tab-dash.html</code>
-    </p>
-    <p>
-    If you need help with your app, join the Ionic Community on the <a href="http://forum.ionicframework.com" target="_blank">Ionic Forum</a>. Make sure to <a href="http://twitter.com/ionicframework" target="_blank">follow us</a> on Twitter to get important updates and announcements for Ionic developers.
-    </p>
-    <p>
-      For help sending push notifications, join the <a href="https://apps.ionic.io/signup" target="_blank">Ionic Platform</a> and check out <a href="http://docs.ionic.io/docs/push-overview" target="_blank">Ionic Push</a>. We also have other services available.
-    </p>
+<ion-view view-title="Monopoly">
+	<ion-content class="padding">
+		<div class="row">
+			<div class="col">
+				<div class="item item-divider">
+					Parked
+				</div>
+				.col
+			</div>
+			<div class="col">
+				<div class="item item-divider yellow">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i>
+				</div>
+				Shaheed-e-Millat Rd.
+			</div>
+			<div class="col">
+				<div class="item item-divider yellow">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				University Rd.
+			</div>
+			<div class="col">
+				<div class="item item-divider yellow">
+					<i class="icon ion-android-star"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				.col
+			</div>
+			<div class="col">
+				<div class="item item-divider">
+					Go Jail
+				</div>
+				.col
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="item item-divider red">
+					<i class="icon ion-android-star"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				Zamzama St.
+			</div>
+			<div class="col col-offset-60">
+				<div class="item item-divider green">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i>
+				</div>
+				Jinnah Airport. 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="item item-divider red">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				Zaibunissa St.
+			</div>
+			<div class="col col-offset-60">
+				<div class="item item-divider green">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				Drigh Rd.
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="item item-divider red">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i>
+				</div>
+				Tipu Sultan Rd.
+			</div>
+			<div class="col col-offset-60">
+				<div class="item item-divider green">
+					<i class="icon ion-android-star"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				Lyari Expressway.
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="item item-divider">
+					Jail
+				</div>
+				.col
+			</div>
+			<div class="col">
+				<div class="item item-divider orange">
+					<i class="icon ion-android-star"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				Napier Rd.
+			</div>
+			<div class="col">
+				<div class="item item-divider orange">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
+				</div>
+				M.A. Jinnah Rd
+			</div>
+			<div class="col">
+				<div class="item item-divider orange">
+					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i>
+				</div>
+				I.I. Chundrigar Rd
+			</div>
+			<div class="col">
+				<div class="item item-divider">
+					<i class="icon ion-arrow-left-a"></i> Go
+				</div>
+				.col
+			</div>
+		</div>
 
-    <button ng-click="authenticate('facebook')">Sign in with Facebook</button>
-    <button ng-click="authenticate('google')">Sign in with Google</button>
-    <button ng-click="authenticate('github')">Sign in with GitHub</button>
-    <button ng-click="authenticate('linkedin')">Sign in with LinkedIn</button>
-    <button ng-click="authenticate('instagram')">Sign in with Instagram</button>
-    <button ng-click="authenticate('twitter')">Sign in with Twitter</button>
-    <button ng-click="authenticate('foursquare')">Sign in with Foursquare</button>
-    <button ng-click="authenticate('yahoo')">Sign in with Yahoo</button>
-    <button ng-click="authenticate('live')">Sign in with Windows Live</button>
-    <button ng-click="authenticate('twitch')">Sign in with Twitch</button>
-    <button ng-click="authenticate('bitbucket')">Sign in with Bitbucket</button>
-    <button ng-click="authenticate('spotify')">Sign in with Spotify</button>
-  </ion-content>
+		<div class="row responsive-sm">
+			<button ng-click="authenticate('facebook')" class="button button-positive icon-left ion-social-facebook">Sign in with Facebook</button>
+			<button ng-click="authenticate('google')" disabled class="button button-assertive icon-left ion-social-googleplus">Sign in with Google</button>
+			<button ng-click="authenticate('github')" disabled class="button button-balanced icon-left ion-social-github">Sign in with GitHub</button>
+			<button ng-click="authenticate('linkedin')" disabled class="button button-positive icon-left ion-social-linkedin">Sign in with LinkedIn</button>
+			<button ng-click="authenticate('instagram')" disabled class="button button-balanced icon-left ion-social-instagram">Sign in with Instagram</button>
+			<button ng-click="authenticate('twitter')" disabled class="button button-balanced icon-left ion-social-twitter">Sign in with Twitter</button>
+			<button ng-click="authenticate('foursquare')" disabled class="button button-positive icon-left ion-social-foursquare">Sign in with Foursquare</button>
+		</div>
+
+	</ion-content>
 </ion-view>
