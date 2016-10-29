@@ -26,8 +26,11 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
   .config(['$stateProvider', '$urlRouterProvider', '$ionicCloudProvider', '$authProvider',
     function ($stateProvider, $urlRouterProvider, $ionicCloudProvider, $authProvider) {
 
+      $authProvider.loginRedirect = '/game/new';
+
       $authProvider.facebook({
-        clientId: '333125333711603'
+        clientId: '333125333711603',
+        redirectUri: (window.location.origin || window.location.protocol + '//' + window.location.host) + '/',
       });
 
       $authProvider.google({
@@ -69,11 +72,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       // No additional setup required for Twitter
       // Twitter
       $authProvider.twitter({
-        url: '/auth/twitter',
-        authorizationEndpoint: 'https://api.twitter.com/oauth/authenticate',
-        redirectUri: window.location.origin,
-        oauthType: '1.0',
-        popupOptions: { width: 495, height: 645 }
+        url: '/auth/twitter'
       });
 
       $authProvider.oauth2({

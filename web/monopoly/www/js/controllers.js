@@ -1,16 +1,8 @@
 angular.module('starter.controllers', [])
 
   .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth) {
-    //console.log('$ionicUser = ' + angular.toJson($ionicUser.social.twitter.data));
-    /*
-    $ionicAuth.login('twitter').then(
-      function (response) {
-        console.log('response = ' + angular.toJson(response));
-      },
-      function (error) {
-        console.log('in error = ' + angular.toJson(error));
-      }
-    );*/
+    console.log($auth.isAuthenticated());    
+    console.log(angular.toJson($auth.getPayload()));
 
     $scope.authenticate = function (provider) {
       $auth.authenticate(provider);
