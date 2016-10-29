@@ -6,47 +6,135 @@ const doc = require('dynamodb-doc');
 
 const dynamo = new doc.DynamoDB();
 
+// Source: http://jsfiddle.net/briguy37/2mvfd/
+function generateUUID() {
+    
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+}
+var MonopolyDB = function() {
+
+    var DB_operation_completed = false;
+    var DB_operation_success = false;
+    var TableName_Boards = "test_boards";    
+    var params = {
+        insert: {
+            TableName: "test_boards",
+            Item: {board_id:""},
+        },
+        select: {
+            TableName: "test_boards",
+            KeyConditionExpression: "board_id = :val",
+            ExpressionAttributeValues: {
+                ":val": ""
+            }
+        }
+    }
+
+    function reset() {
+        DB_operation_completed = false;
+        DB_operation_success = false;
+    }
+    function DB_requestCallback(err, res) {
+        console.log("C");
+        //callback
+        if (err) {
+            console.log("F");
+            console.log(err.message);
+            DB_operation_completed = true;
+            DB_operation_success = false;
+        }
+        else {
+            console.log("S");
+            DB_operation_completed = true;
+            DB_operation_success = true;
+        }
+    }
+
+    var createGame = function(Item, callback_func) {
+        reset();
+
+        console.log("A");
+        params.insert.Item = JSON.parse(JSON.stringify(Item));
+        params.insert.TableName = TableName_Boards;
+        console.log(params.insert);
+        dynamo.putItem(params.insert, callback_func ? callback_func : DB_requestCallback);
+        console.log("B");
+    }
+    var updateGame = function(Item) {
+        createGame(Item);
+    }
+    var queryGame = function(board_id, callback_func) {
+        reset();
+
+        params.select.ExpressionAttributeValues = {":val": board_id};
+        params.select.TableName = TableName_Boards;
+        dynamo.query(params.select, callback_func ? callback_func : DB_requestCallback);
+    }
+
+    var get_DB_operation_completed = function() { return DB_operation_completed;}
+    var get_DB_operation_success = function() { return DB_operation_success;}
+
+    return {
+        create: createGame,
+        update: updateGame,
+        query: queryGame,
+        operationCompleted: get_DB_operation_completed,
+        operationSuccess: get_DB_operation_success
+    }
+}();
+
 var Monopoly = function() {
 
     const MAX_USER_PER_BOARD = 4;
+    var userColors = ["yellow", "green", "red", "blue"];
     var currentGameState = {
         "board_id": "581274e5e8841a5d34292af1",
-        "state": "in-play",
+        "status": "in-play",
         "turn": 0,
         "view": "player",
         "user": [
             {
                 "name": "Robert Marsh",
                 "position": 0,
+                "hash": "",
                 "color": "yellow",
                 "cash": 500000
             },
             {
                 "name": "Margarita Day",
                 "position": 0,
+                "hash": "",
                 "color": "green",
                 "cash": 500000
             },
             {
                 "name": "Latoya Middleton",
                 "position": 0,
+                "hash": "",
                 "color": "red",
                 "cash": 500000
             },
             {
                 "name": "Barron Hess",
                 "position": 0,
+                "hash": "",
                 "color": "blue",
                 "cash": 500000
             }
         ],
-        "space": [
+        "place": [
             {
                 "name": "GO",
                 "type": "go",
                 "price": 0,
                 "rent": 0,
-                "color": "",
+                "color": "black",
                 "star": 0,
                 "owner": -1
             },
@@ -82,7 +170,7 @@ var Monopoly = function() {
                 "type": "go_to_jail",
                 "price": 0,
                 "rent": 0,
-                "color": "",
+                "color": "black",
                 "star": 1,
                 "owner": -1
             },
@@ -118,7 +206,7 @@ var Monopoly = function() {
                 "type": "jail",
                 "price": 0,
                 "rent": 0,
-                "color": "",
+                "color": "black",
                 "star": 1,
                 "owner": -1
             },
@@ -154,7 +242,7 @@ var Monopoly = function() {
                 "type": "parking",
                 "price": 0,
                 "rent": 0,
-                "color": "",
+                "color": "black",
                 "star": 1,
                 "owner": -1
             },
@@ -193,18 +281,22 @@ var Monopoly = function() {
         return true;
     }
     function validateUser(user_obj) {
-        //@todo - add code
+        // @todo - add code
+
         return true;
     }
     function validateTurn(action_object) {
         //#todo - write code
         return true;
     }
+    var saveToDB = function() {
+        MonopolyDB.create(currentGameState, null);
+    }
 
     var createNewGame = function(game_id) {
         currentGameState.board_id = game_id;
         currentGameState.user = [];
-        return currentGameState;
+        return true;
     }
     var initializeGame = function(game_state) {
         if (!validateGameState(game_state))
@@ -214,7 +306,7 @@ var Monopoly = function() {
         return true;
     }
 
-    var removeUser = function(user_index) { // 0 - N-1
+    var removeUserFunction = function(user_index) { // 0 - N-1
         var nUsers = currentGameState.user.length;
         if (nUsers <= user_index)
             return false;
@@ -222,7 +314,7 @@ var Monopoly = function() {
         currentGameState.user = currentGameState.user.splice(user_index, 1);
         return ((nUsers-1) == currentGameState.user.length);
     }
-    var addUser = function(user_obj) {
+    var addUserFunction = function(user_obj) {
         if (!validateUser(user_obj))
             return false;
         
@@ -230,7 +322,15 @@ var Monopoly = function() {
         if (MAX_USER_PER_BOARD <= nUsers)
             return false;
 
-        currentGameState.user.push_back(user_obj);
+        var user_item =  {
+            "name": "Player " + nUsers+1,
+            "position": 0,
+            "hash": user_obj.user,
+            "color": userColors[nUsers],
+            "cash": 500000
+        };
+        currentGameState.user.push(user_item);
+        return true;
     }
 
     var passOnTurn = function(action_obj) {
@@ -256,9 +356,10 @@ var Monopoly = function() {
         create: createNewGame,
         init: initializeGame,
         validate: validateGameState,
+        save: saveToDB,
         
-        addUser: removeUser,
-        removeUser: addUser,
+        addUser: addUserFunction,
+        removeUser: removeUserFunction,
 
         move: makeMove,
 
@@ -271,7 +372,7 @@ var Request = function() {
     var task = '';
 
     function validateCreateRequest() {
-        // @todo add code
+        // @todo - add code
         return true;
     }
     function validateJoinRequest() {
@@ -282,7 +383,7 @@ var Request = function() {
     var validateRequest = function(event) {
         if (!event.body || !event.path)
             return false;
-
+        
         payload = event.body;
         task = event.path;
 
@@ -297,11 +398,24 @@ var Request = function() {
     }
 
     function createServer() {
-        // @todo - add code
+        var uuid = generateUUID();
+        if (!Monopoly.create(uuid))
+            return {
+                status: "error",
+                message: "Unable to create new board"
+            };
+        if (!Monopoly.addUser(payload))
+            return {
+                status: "error",
+                message: "Unable to add new user"
+            };
+        
+        Monopoly.save();
+
         return {
             status: "success",
-            game_id: "ABC-random-XYZ",
-            game_state: {game_id: "ABC-random-XYZ"}
+            game_id: uuid,
+            game_state: Monopoly.state()
         };
     }
 
@@ -363,7 +477,7 @@ exports.handler = (event, context, callback) => {
                     done({status: "error", message:"response was null"}, null);
             }
             else
-                done({status: "error", message:"Unknown Request Format"}, null);
+                done({status: "error", message:"Unknown Request Format" + JSON.stringify(event)}, null);
             break;
         default:
             done(new Error(`Unsupported method "${event.httpMethod}"`));

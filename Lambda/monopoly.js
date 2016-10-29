@@ -7,6 +7,72 @@ const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
 
 
+var MonopolyDB = function() {
+
+    var DB_operation_completed = false;
+    var DB_operation_success = false;
+    var TableName_Boards = "test_boards";    
+    var params = {
+        insert: {
+            TableName: "test_boards",
+            Item: {board_id:""},
+        },
+        select: {
+            TableName: "test_boards",
+            KeyConditionExpression: "board_id = :val",
+            ExpressionAttributeValues: {
+                ":val": ""
+            }
+        }
+    }
+
+    function reset() {
+        DB_operation_completed = false;
+        DB_operation_success = false;
+    }
+    function DB_requestCallback(err, res) {
+        //callback
+        if (err) {
+            DB_operation_completed = true;
+            DB_operation_success = false;
+        }
+        else {
+            DB_operation_completed = true;
+            DB_operation_success = true;
+        }
+    }
+
+    var createGame = function(Item, callback_func) {
+        reset();
+
+        params.insert.Item = Item;
+        params.insert.TableName = TableName_Boards;
+        console.log(params.insert);
+        dynamo.putItem(params.insert, callback_func ? callback_func : DB_requestCallback);
+    }
+    var updateGame = function(Item) {
+        createGame(Item);
+    }
+    var queryGame = function(board_id, callback_func) {
+        reset();
+
+        params.select.ExpressionAttributeValues = {":val": board_id};
+        params.select.TableName = TableName_Boards;
+        dynamo.query(params.select, callback_func ? callback_func : DB_requestCallback);
+    }
+
+    var get_DB_operation_completed = function() { return DB_operation_completed;}
+    var get_DB_operation_success = function() { return DB_operation_success;}
+
+    return {
+        create: createGame,
+        update: updateGame,
+        query: queryGame,
+        operationCompleted: get_DB_operation_completed,
+        operationSuccess: get_DB_operation_success
+    }
+}();
+
 /**
  * Demonstrates a simple HTTP endpoint using API Gateway. You have full
  * access to the request and response payload, including headers and
@@ -28,7 +94,7 @@ exports.handler = (event, context, callback) => {
         },
     });
 
-    var board_id = "generated-GUID1";
+    var board_id = "142e898f-adf6-4d65-b420-b8182c18b9b8";
 
     event = {
         httpMethod: 'GET',
@@ -241,6 +307,8 @@ exports.handler = (event, context, callback) => {
             ReturnValues:"UPDATED_NEW"
         }
     };
+
+    MonopolyDB.create(event.body);
 
     switch (event.httpMethod) {
         case 'DELETE':

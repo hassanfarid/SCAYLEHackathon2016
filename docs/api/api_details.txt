@@ -2,7 +2,7 @@ Dev API URL: https://wzz31he6pj.execute-api.us-west-2.amazonaws.com/dev/monopoly
 
 Supported tasks:
 
-+ create
++ create - completed!
 Request body:
 {
 	user: server-auth-key
@@ -18,7 +18,7 @@ Response body:
     message: "Reason for error"
 }
 
-+ join
++ join - 
 Request body:
 {
 	user: server-auth-key,
