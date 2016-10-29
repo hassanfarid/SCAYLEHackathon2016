@@ -1,0 +1,77 @@
+Dev API URL: https://wzz31he6pj.execute-api.us-west-2.amazonaws.com/dev/monopoly/{task}
+
+Supported tasks:
+
++ create
+Request body:
+{
+	user: server-auth-key
+}
+Response body:
+{
+    status: "success",
+    game_id: "ABC-random-XYZ",
+    game_state: @ref/game_object
+}
+{
+    status: "error",
+    message: "Reason for error"
+}
+
++ join
+Request body:
+{
+	user: server-auth-key,
+	game_id: "ABC-random-XYZ"
+}
+Response body:
+{
+    status: "success",
+    game_id: "ABC-random-XYZ",
+    game_state: @ref/game_object
+}
+{
+    status: "error",
+    game_id: "ABC-random-XYZ",
+    message: "Reason for unable to join"
+}
+
++ move
+Request body:
+{
+	user: server-auth-key,
+	game_id: "ABC-random-XYZ",
+	move : {
+		action: "diceRolled",
+		diceValue: 3
+	},
+	//OR
+	move : {
+		action: "buyProperty"
+	},
+	,
+	//OR
+	move : {
+		action: "sellProperty",
+		property: @ref/property_object
+	},
+	//OR
+	move : {
+		action: "payRent"
+	},
+	//OR
+	move : {
+		action: "finishTurn"
+	}
+}
+Response body:
+{
+    status: "success",
+    game_id: "ABC-random-XYZ",
+    game_state: @ref/game_object
+}
+{
+    status: "error",
+    game_id: "ABC-random-XYZ",
+    message: "Reason for unable to join"
+}
