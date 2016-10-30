@@ -11,10 +11,9 @@ angular.module('starter.controllers', [])
           var decrypted = CryptoJS.AES.decrypt(sessionStorage.appServiceVariables, appService.key).toString(CryptoJS.enc.Utf8);
           var temp = JSON.parse(decrypted);
 
-          if (appService.user == null)
-            appService.user = { user: 'guest' + Date.now() };
-
           appService.isLoggedIn = temp.isLoggedIn;
+          appService.user = temp.user;
+          appService.gameState = temp.gameState;
           appService.isError = false;
           appService.error = {};
           appServiceToString = JSON.stringify(appService);
@@ -33,6 +32,7 @@ angular.module('starter.controllers', [])
         }
       } else {
         // Encrypting and then saving to the session storage
+        appService.user = { user: 'guest' + Date.now() };
         appServiceToString = JSON.stringify(appService);
         encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
         sessionStorage.appServiceVariables = encrypted.toString();
@@ -53,18 +53,71 @@ angular.module('starter.controllers', [])
   .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService) {
     console.log($auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
+    console.log(appService.user);
+
+    $scope.gameState = {};
+
+    // Start game if not yet started
+    if (appService.gameState == null) {
+      create();
+    }
+    else {
+      console.log("Joining existing game");
+      join(appService.gameState.board_id);
+    }
+
+    function create() {
+      monopolyService.createGame(appService.user)
+        .success(function (data) {
+          console.log(data);
+          appService.gameState = data.game_state;
+          $scope.gameState = data.game_state;
+        })
+        .error(function (error) {
+          console.log(error);
+        });
+    }
+
+    function join(gameId) {
+      var payload = {
+        user: appService.user,
+        game_id: gameId
+      };
+      monopolyService.joinGame(payload)
+        .success(function (data) {
+          console.log(data);
+          $scope.gameState = data.game_state;
+        })
+        .error(function (error) {
+          console.log(error);
+        });
+    }
+
+    // Join from gameId provided by user
+    $scope.joinGame = function () {
+
+    }
+
+    // Create new game
+    $scope.newGame = function () {
+      appService.gameState = null;
+      create();
+    }
+
+    $scope.authenticate = function (provider) {
+      $auth.authenticate(provider);
+    };
+  })
+
+
+  .controller('JoinCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService) {
+    console.log($auth.isAuthenticated());
+    console.log(angular.toJson($auth.getPayload()));
 
     var gameId = $stateParams.gameId;
     $scope.gameState = {};
 
-    monopolyService.createGame(appService.user)
-      .success(function (data) {
-        console.log(data);
-        $scope.gameState = data.game_state;
-      })
-      .error(function (error) {
-        console.log(error);
-      });
+
 
     $scope.authenticate = function (provider) {
       $auth.authenticate(provider);

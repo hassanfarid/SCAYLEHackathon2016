@@ -5,5 +5,10 @@ angular.module('starter.services').service('monopolyService', ['$http', 'appServ
         return $http.post(appService.serviceURL + "monopoly/create", angular.toJson(user));
     };
 
+    // [POST] Join Game
+    this.joinGame = function (payload) {
+        return $http.post(appService.serviceURL + "monopoly/join", angular.toJson(payload));
+    };
+
 
 }]);
