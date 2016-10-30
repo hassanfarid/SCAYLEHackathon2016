@@ -573,6 +573,7 @@ exports.handler = (event, context, callback) => {
         body: err ? JSON.stringify(err) : JSON.stringify(res),
         headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
         },
     });
     if (event.body) {
@@ -616,6 +617,7 @@ var handlerNext = function(event, context, callback) {
         body: err ? JSON.stringify(err) : JSON.stringify(res),
         headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
         },
     });
 
