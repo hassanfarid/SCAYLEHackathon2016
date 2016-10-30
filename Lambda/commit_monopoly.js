@@ -6,6 +6,14 @@ const doc = require('dynamodb-doc');
 
 const dynamo = new doc.DynamoDB();
 
+function pausecomp(millis)
+{
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < millis);
+}
+
 // Source: http://jsfiddle.net/briguy37/2mvfd/
 function generateUUID() {
     
@@ -36,6 +44,12 @@ var MonopolyDB = function() {
         }
     }
 
+    function waitToComplete() {
+        while (!DB_operation_completed)
+            pausecomp(1000);
+
+        return DB_operation_success;
+    }
     function reset() {
         DB_operation_completed = false;
         DB_operation_success = false;
@@ -46,25 +60,23 @@ var MonopolyDB = function() {
         if (err) {
             console.log("F");
             console.log(err.message);
-            DB_operation_completed = true;
-            DB_operation_success = false;
+            MonopolyDB.DB_operation_success = false;
+            MonopolyDB.DB_operation_completed = true;
         }
         else {
             console.log("S");
-            DB_operation_completed = true;
-            DB_operation_success = true;
+            MonopolyDB.DB_operation_success = true;
+            MonopolyDB.DB_operation_completed = true;
         }
     }
 
     var createGame = function(Item, callback_func) {
         reset();
 
-        console.log("A");
-        params.insert.Item = JSON.parse(JSON.stringify(Item));
+        params.insert.Item = Item;
         params.insert.TableName = TableName_Boards;
-        console.log(params.insert);
         dynamo.putItem(params.insert, callback_func ? callback_func : DB_requestCallback);
-        console.log("B");
+        //return waitToComplete();
     }
     var updateGame = function(Item) {
         createGame(Item);
@@ -75,6 +87,8 @@ var MonopolyDB = function() {
         params.select.ExpressionAttributeValues = {":val": board_id};
         params.select.TableName = TableName_Boards;
         dynamo.query(params.select, callback_func ? callback_func : DB_requestCallback);
+
+        //return waitToComplete();
     }
 
     var get_DB_operation_completed = function() { return DB_operation_completed;}
@@ -302,6 +316,7 @@ var Monopoly = function() {
         if (!validateGameState(game_state))
             return false;
 
+        console.log(game_state);
         currentGameState = game_state;
         return true;
     }
@@ -321,9 +336,9 @@ var Monopoly = function() {
         var nUsers = currentGameState.user.length;
         if (MAX_USER_PER_BOARD <= nUsers)
             return false;
-
+        
         var user_item =  {
-            "name": "Player " + nUsers+1,
+            "name": "Player " + (nUsers+1),
             "position": 0,
             "hash": user_obj.user,
             "color": userColors[nUsers],
@@ -387,6 +402,9 @@ var Request = function() {
         payload = event.body;
         task = event.path;
 
+        console.log(payload);
+        console.log(payload.user);
+
         switch (task) {
             case '/monopoly/create':
                 return validateCreateRequest();
@@ -420,10 +438,22 @@ var Request = function() {
     }
 
     function joinServer() {
-        // @todo - add code
+        if (!Monopoly.init(payload.game_state))
+            return {
+                status: "error",
+                message: "Unable to add new user"
+            };
+        if (!Monopoly.addUser(payload))
+            return {
+                status: "error",
+                message: "Unable to add new user"
+            };
+        Monopoly.save();
+
         return {
-            status: "error",
-            message: "Not implemented"
+            status: "success",
+            game_id: payload.game_id,
+            game_state: Monopoly.state()
         };
     }
 
@@ -455,6 +485,47 @@ var Request = function() {
  * DynamoDB API as a JSON body.
  */
 exports.handler = (event, context, callback) => {
+    const done = (err, res) => callback(null, {
+        statusCode: err ? '400' : '200',
+        body: err ? JSON.stringify(err) : JSON.stringify(res),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (event.body) {
+        var body = JSON.parse(event.body);
+        if  (body.game_id)
+        {
+            console.log('Prefetch from DB');
+            var params = {
+                TableName: "test_boards",
+                KeyConditionExpression: "board_id = :val",
+                ExpressionAttributeValues: {
+                    ":val": body.game_id
+                }
+            };
+            dynamo.query(params, function(err, res) {
+                if (!err && res.Items.length > 0) {
+                    body.game_state = res.Items[0];
+                    event.body = body;
+                    handlerNext(event, context, callback);
+                }
+                else {
+                    console.log(err.message);
+                    done({status: "error", message:"No data found for givengame_id"}, null);
+                }
+            });
+        }
+        else {
+            event.body = body;
+            handlerNext(event, context, callback);
+        }
+    }
+    else
+        handlerNext(event, context, callback);
+}
+
+var handlerNext = function(event, context, callback) {
     console.log('Received event:', JSON.stringify(event, null, 2));
 
     const done = (err, res) => callback(null, {
