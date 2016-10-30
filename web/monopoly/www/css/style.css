@@ -1,1 +1,34 @@
 /* Empty. Add your own CSS if you like */
+.col {
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    background: #f7f7f7;
+    text-align: center;
+}
+
+.col-offset-60 {
+    margin-left: 60%;
+}
+
+.calm {
+    background-color: #11c1f3;
+    color: black;
+}
+
+.orange {
+    background-color: #F29D35;
+}
+
+.red {
+    background-color: #E75B4B;
+}
+
+.yellow {
+    background-color: #FFFA47;
+}
+
+.green {
+    background-color: #8BFF83;
+}
