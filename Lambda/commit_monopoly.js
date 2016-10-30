@@ -331,7 +331,7 @@ var Monopoly = function() {
     }
     function getNextTurnUser(user_turn) {
         var len = currentGameState.user.length;
-        return ((user_turn + 1) % (len<MAX_USER_PER_BOARD? len : MAX_USER_PER_BOARD));
+        return parseInt((user_turn + 1) % len);
     }
 
     var saveToDB = function() {
@@ -393,18 +393,18 @@ var Monopoly = function() {
     }
 
     var makeMove = function(user_hash) {
-        var user = getUserIndex(user_hash);
-        if (user <0)
+        var userIndex = getUserIndex(user_hash);
+        if (userIndex < 0)
             return;
-        if (!validateTurn(user))
+        if (!validateTurn(userIndex))
             return false;
 
         var diceRoll = (parseInt(Math.random()*10000) % MAX_DICE_VALUE) + 1;
 
-        currentGameState.user[user].position += diceRoll;
-        currentGameState.user[user].position %= MAX_PLACES_ON_BOARD;
-        currentGameState.user[user].cash -= diceRoll;
-        currentGameState.turn = getNextTurnUser(user);
+        currentGameState.user[userIndex].position += diceRoll;
+        currentGameState.user[userIndex].position %= MAX_PLACES_ON_BOARD;
+        currentGameState.user[userIndex].cash -= diceRoll;
+        currentGameState.turn = getNextTurnUser(userIndex);
 
         return true;
     }
