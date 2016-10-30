@@ -18,7 +18,7 @@ Response body:
     message: "Reason for error"
 }
 
-+ join - 
++ join - completed!
 Request body:
 {
 	user: server-auth-key,
@@ -32,18 +32,16 @@ Response body:
 }
 {
     status: "error",
-    game_id: "ABC-random-XYZ",
     message: "Reason for unable to join"
 }
 
-+ move
++ move/{action}
 Request body:
 {
 	user: server-auth-key,
 	game_id: "ABC-random-XYZ",
 	move : {
-		action: "diceRolled",
-		diceValue: 3
+		action: "rollDice"
 	},
 	//OR
 	move : {
@@ -56,7 +54,7 @@ Request body:
 		property: @ref/property_object
 	},
 	//OR
-	move : {
+	move : { // not needed - will be implemented as move
 		action: "payRent"
 	},
 	//OR
@@ -68,10 +66,10 @@ Response body:
 {
     status: "success",
     game_id: "ABC-random-XYZ",
+    diceOutput : 2,
     game_state: @ref/game_object
 }
 {
     status: "error",
-    game_id: "ABC-random-XYZ",
     message: "Reason for unable to join"
 }

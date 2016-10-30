@@ -106,6 +106,7 @@ var MonopolyDB = function() {
 var Monopoly = function() {
 
     const MAX_USER_PER_BOARD = 4;
+    const MAX_PLACES_ON_BOARD = 16;
     var userColors = ["yellow", "green", "red", "blue"];
     var currentGameState = {
         "board_id": "581274e5e8841a5d34292af1",
@@ -299,10 +300,24 @@ var Monopoly = function() {
 
         return true;
     }
-    function validateTurn(action_object) {
-        //#todo - write code
+    function validateTurn(currentUser) {
+        if (currentGameState.turn != currentUser)
+            return false;
+
         return true;
     }
+    function getUserIndex(user_hash) {
+        for(var i=0; i< currentGameState.user.length; i++)
+            if (currentGameState.user[i].hash == user_hash)
+                return i;
+
+        return -1;
+    }
+    function getNextTurnUser(user_turn) {
+        var len = currentGameState.user.length;
+        return ((user_turn + 1) % (len<MAX_USER_PER_BOARD? len : MAX_USER_PER_BOARD));
+    }
+
     var saveToDB = function() {
         MonopolyDB.create(currentGameState, null);
     }
@@ -361,9 +376,22 @@ var Monopoly = function() {
         return true;
     }
 
-    var makeMove = function(action_obj) {
-        if (!validateTurn(action_obj))
+    var makeMove = function(user_hash) {
+        var user = getUserIndex(user_hash);
+        if (user <0)
+            return;
+        if (!validateTurn(user))
             return false;
+
+        currentGameState.user[user].position += 1;
+        currentGameState.user[user].position %= MAX_PLACES_ON_BOARD;
+        currentGameState.user[user].cash -= 1;
+        console.log('Turn: ', currentGameState.turn);
+        console.log('User: ', user);
+        currentGameState.turn = getNextTurnUser(user);
+        console.log('Turn: ', currentGameState.turn);
+
+        return true;
     }
 
     var getGameState = function() { return currentGameState;}
@@ -387,11 +415,22 @@ var Request = function() {
     var task = '';
 
     function validateCreateRequest() {
-        // @todo - add code
+        if(payload.user == undefined)
+            return false;
+
         return true;
     }
     function validateJoinRequest() {
-        // @todo add code
+        if(payload.user == undefined || payload.game_id == undefined)
+            return false;
+        
+        return true;
+    }function validateMoveRequest() {
+        if(payload.user == undefined || payload.game_id == undefined)
+            return false;
+        if (task == '/monopoly/move/sellProperty' && !payload.property)
+            return false;
+
         return true;
     }
 
@@ -402,14 +441,17 @@ var Request = function() {
         payload = event.body;
         task = event.path;
 
-        console.log(payload);
-        console.log(payload.user);
-
         switch (task) {
             case '/monopoly/create':
                 return validateCreateRequest();
             case '/monopoly/join':
                 return validateJoinRequest();
+            case '/monopoly/move/rollDice':
+                return validateMoveRequest();
+            case '/monopoly/move/buyProperty':
+                return validateMoveRequest();
+            case '/monopoly/move/sellProperty':
+                return validateMoveRequest();
             default:
                 return false;
         }
@@ -441,7 +483,7 @@ var Request = function() {
         if (!Monopoly.init(payload.game_state))
             return {
                 status: "error",
-                message: "Unable to add new user"
+                message: "Unable to init game"
             };
         if (!Monopoly.addUser(payload))
             return {
@@ -456,6 +498,25 @@ var Request = function() {
             game_state: Monopoly.state()
         };
     }
+    function makeMove() {
+        if (!Monopoly.init(payload.game_state))
+            return {
+                status: "error",
+                message: "Unable to init game"
+            };
+        if (!Monopoly.move(payload.user))
+            return {
+                status: "error",
+                message: "No Move allowed."
+            };
+        Monopoly.save();
+
+        return {
+            status: "success",
+            game_id: payload.game_id,
+            game_state: Monopoly.state()
+        }
+    }
 
     var preocessRequest = function() {
         switch (task) {
@@ -463,6 +524,12 @@ var Request = function() {
                 return createServer();
             case '/monopoly/join':
                 return joinServer();
+            case '/monopoly/move/rollDice':
+                return makeMove();
+            case '/monopoly/move/buyProperty':
+                return makeMove();
+            case '/monopoly/move/sellProperty':
+                return makeMove();
             default:
                 return null;
         }
