@@ -10,6 +10,10 @@ angular.module('starter.controllers', [])
         try {
           var decrypted = CryptoJS.AES.decrypt(sessionStorage.appServiceVariables, appService.key).toString(CryptoJS.enc.Utf8);
           var temp = JSON.parse(decrypted);
+
+          if (appService.user == null)
+            appService.user = { user: 'guest' + Date.now() };
+
           appService.isLoggedIn = temp.isLoggedIn;
           appService.isError = false;
           appService.error = {};
@@ -18,7 +22,7 @@ angular.module('starter.controllers', [])
           sessionStorage.appServiceVariables = encrypted.toString();
           // sessionStorage.appServiceVariables = JSON.stringify(appService);
           if (appService.isLoggedIn) {
-            notificationService.establishConnection(appService.userData.userTypeID);
+            // connect to pubnub
           }
         } catch (err) {
           //console.log(err);
@@ -46,15 +50,17 @@ angular.module('starter.controllers', [])
   })
 
   // Actual Monopoly Board Controller
-  .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService) {
+  .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService) {
     console.log($auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
 
-    var user = { user: 'user1' };
+    var gameId = $stateParams.gameId;
+    $scope.gameState = {};
 
-    monopolyService.createGame(user)
+    monopolyService.createGame(appService.user)
       .success(function (data) {
         console.log(data);
+        $scope.gameState = data.game_state;
       })
       .error(function (error) {
         console.log(error);
