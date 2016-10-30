@@ -113,8 +113,9 @@ angular.module('starter.controllers', [])
       Pubnub.subscribe({
         channel: $scope.gameState.game_id,
         message: function (m) {
-          console.log(m)
-          //$scope.gameState = angular.parsejson(m);
+          var temp = angular.fromJson(m);
+          $scope.gameState = temp;
+          console.log($scope.gameState);
         },
         error: function (error) {
           // Handle error here
