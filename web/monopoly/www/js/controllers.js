@@ -50,7 +50,9 @@ angular.module('starter.controllers', [])
     console.log($auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
 
-    monopolyService.createGame()
+    var user = { user: 'user1' };
+
+    monopolyService.createGame(user)
       .success(function (data) {
         console.log(data);
       })
