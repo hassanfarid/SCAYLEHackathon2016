@@ -163,7 +163,23 @@
 					</div>
 				</div>
 			</div>
-			<div class="col col-offset-60">
+			<div class="col col-offset-20">
+				<div class="row car">
+					<div class="col" ng-show="gameState.user.length >= 1">
+						<i class="icon ion-model-s positive"></i><br/> {{gameState.user[0].cash | currency:"":0}}
+					</div>
+					<div class="col" ng-show="gameState.user.length >= 2">
+						<i class="icon ion-model-s balanced"></i><br/> {{gameState.user[1].cash | currency:"":0}}
+					</div>
+					<div class="col" ng-show="gameState.user.length >= 3">
+						<i class="icon ion-model-s assertive"></i><br/> {{gameState.user[2].cash | currency:"":0}}
+					</div>
+					<div class="col" ng-show="gameState.user.length >= 4">
+						<i class="icon ion-model-s dark"></i><br/> {{gameState.user[3].cash | currency:"":0}}
+					</div>
+				</div>
+			</div>
+			<div class="col col-offset-20">
 				<div class="item item-divider green">
 					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
 				</div>
@@ -314,20 +330,34 @@
 					<div class="col" ng-show="gameState.user[0].position==0">
 						<i class="icon ion-model-s positive"></i>
 					</div>
-					<div class="col" ng-show="gameState.user[2].position==0">
+					<div class="col" ng-show="gameState.user[1].position==0">
 						<i class="icon ion-model-s balanced"></i>
 					</div>
-					<div class="col" ng-show="gameState.user[3].position==0">
+					<div class="col" ng-show="gameState.user[2].position==0">
 						<i class="icon ion-model-s assertive"></i>
 					</div>
-					<div class="col" ng-show="gameState.user[4].position==0">
+					<div class="col" ng-show="gameState.user[3].position==0">
 						<i class="icon ion-model-s dark"></i>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		
+		<div class="row">
+			<div class="col">
+				<label class="item item-input">
+					<span class="input-label">GameId (Share)</span>
+					<input type="text" ng-model="appService().gameState.game_id">
+				</label>
+			</div>
+			<div class="col">
+				<button ng-click="joinGame()" class="button button-positive icon-left ion-ios-bolt">Join Game</button>
+				<button ng-click="newGame()" class="button button-assertive icon-left ion-ios-refresh">New Game</button>
+			</div>
+			<div class="col">
+				<button ng-click="rollDice()" class="button button-balanced icon-left ion-ios-keypad">Roll Dice</button>
+			</div>
+		</div>
 
 	</ion-content>
 </ion-view>
