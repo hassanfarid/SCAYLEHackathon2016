@@ -12,12 +12,17 @@
     margin-left: 60%;
 }
 
+.calm {
+    background-color: #11c1f3;
+    color: black;
+}
+
 .orange {
     background-color: #F29D35;
 }
 
 .red {
-    background-color: #E83338;
+    background-color: #E75B4B;
 }
 
 .yellow {

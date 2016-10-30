@@ -148,6 +148,6 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       $urlRouterProvider.otherwise('/tab/dash');
 
     }])
-  .run(function ($ionicPlatform) {
-
+  .run(function ($ionicPlatform, appService) {
+    
   });

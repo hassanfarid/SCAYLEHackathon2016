@@ -1,8 +1,62 @@
 angular.module('starter.controllers', [])
 
-  .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth) {
-    console.log($auth.isAuthenticated());    
+  .controller('ParentCtrl', function ($scope, appService) {
+    if (appService.firstLoad) {
+
+      var appServiceToString;
+      var encrypted;
+      if ((angular.isDefined(sessionStorage.appServiceVariables)) && (sessionStorage.appServiceVariables !== null)) {
+
+        try {
+          var decrypted = CryptoJS.AES.decrypt(sessionStorage.appServiceVariables, appService.key).toString(CryptoJS.enc.Utf8);
+          var temp = JSON.parse(decrypted);
+          appService.isLoggedIn = temp.isLoggedIn;
+          appService.isError = false;
+          appService.error = {};
+          appServiceToString = JSON.stringify(appService);
+          encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
+          sessionStorage.appServiceVariables = encrypted.toString();
+          // sessionStorage.appServiceVariables = JSON.stringify(appService);
+          if (appService.isLoggedIn) {
+            notificationService.establishConnection(appService.userData.userTypeID);
+          }
+        } catch (err) {
+          //console.log(err);
+          sessionStorage.clear();
+          appServiceToString = JSON.stringify(appService);
+          encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
+          sessionStorage.appServiceVariables = encrypted.toString();
+        }
+      } else {
+        // Encrypting and then saving to the session storage
+        appServiceToString = JSON.stringify(appService);
+        encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
+        sessionStorage.appServiceVariables = encrypted.toString();
+      }
+      // Add mutation watcher on appServiceVariables, incase of change update in sessionStorage
+      $scope.$watch(function () {
+        return appService;
+      }, function (newVal, oldVal) {
+        var appServiceToString = JSON.stringify(newVal);
+        var encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
+        sessionStorage.appServiceVariables = encrypted.toString();
+      }, true);
+      appService.firstLoad = false;
+    }
+  })
+
+  // Actual Monopoly Board Controller
+  .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService) {
+    console.log($auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
+
+    monopolyService.createGame()
+      .success(function (data) {
+        console.log(data);
+      })
+      .error(function (error) {
+        console.log(error);
+      });
 
     $scope.authenticate = function (provider) {
       $auth.authenticate(provider);
