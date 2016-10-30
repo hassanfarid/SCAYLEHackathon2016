@@ -3,8 +3,23 @@
 console.log('Loading function');
 
 const doc = require('dynamodb-doc');
-
 const dynamo = new doc.DynamoDB();
+var PubNub = require('pubnub');
+
+var pubnub = new PubNub({
+        publishKey : 'pub-c-82772049-53f1-4515-8458-65e353717814',
+        subscribeKey : 'sub-c-1ac7aae8-9ea9-11e6-a0c0-0619f8945a4f'
+    });
+       
+function publishToPubnub(chnl, mess) {
+    var publishConfig = {
+        channel : chnl,
+        message : mess
+    }
+    pubnub.publish(publishConfig, function(status, response) {
+        console.log(status, response);
+    })
+}
 
 function pausecomp(millis)
 {
@@ -510,6 +525,7 @@ var Request = function() {
                 message: "No Move allowed."
             };
         Monopoly.save();
+        publishToPubnub(payload.game_id, JSON.stringify(Monopoly.state()));
 
         return {
             status: "success",
