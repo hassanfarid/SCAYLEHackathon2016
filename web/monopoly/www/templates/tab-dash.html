@@ -355,13 +355,9 @@
 				<button ng-click="newGame()" class="button button-assertive icon-left ion-ios-refresh">New Game</button>
 			</div>
 			<div class="col">
-				<button ng-click="rollDice()" class="button button-balanced icon-left ion-ios-keypad" ng-disabled="gameState.user[gameState.turn].hash != appService().user">Roll Dice</button>
+				<button ng-click="rollDice()" class="button button-balanced icon-left ion-ios-keypad">Roll Dice</button>
 			</div>
 		</div>
-
-		{{gameState.user[gameState.turn].hash != appService().user}}
-		{{gameState.user[gameState.turn].hash}}
-		{{appService().user}}
 
 	</ion-content>
 </ion-view>

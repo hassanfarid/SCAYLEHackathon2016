@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
   .controller('ParentCtrl', function ($scope, appService) {
 
-    $scope.appService = function(){
+    $scope.appService = function () {
       return appService;
     }
 
@@ -55,7 +55,7 @@ angular.module('starter.controllers', [])
   })
 
   // Actual Monopoly Board Controller
-  .controller('DashCtrl', function ($scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService) {
+  .controller('DashCtrl', function ($rootScope, $scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService, Pubnub) {
     console.log($auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
     console.log(appService.user);
@@ -80,6 +80,7 @@ angular.module('starter.controllers', [])
           console.log(data);
           appService.gameState = data.game_state;
           $scope.gameState = data.game_state;
+          subscribeUpdates();
         })
         .error(function (error) {
           console.log(error);
@@ -95,14 +96,49 @@ angular.module('starter.controllers', [])
         .success(function (data) {
           console.log(data);
           $scope.gameState = data.game_state;
+          subscribeUpdates();
         })
         .error(function (error) {
           console.log(error);
         });
     }
 
+    Pubnub.init({
+      publish_key: 'pub-c-82772049-53f1-4515-8458-65e353717814',
+      subscribe_key: 'sub-c-1ac7aae8-9ea9-11e6-a0c0-0619f8945a4f'
+    });
+
+    function subscribeUpdates() {
+
+      Pubnub.subscribe({
+        channel: $scope.gameState.game_id,
+        message: function (m) {
+          console.log(m)
+          //$scope.gameState = angular.parsejson(m);
+        },
+        error: function (error) {
+          // Handle error here
+          console.log(JSON.stringify(error));
+        }
+      });
+
+      $rootScope.$on(Pubnub.getMessageEventNameFor($scope.gameState.game_id), function (ngEvent, envelope) {
+        $scope.$apply(function () {
+          // add message to the messages list
+          console.log(envelope);
+        });
+      });
+    }
+
+    function cancelUpdates() {
+      Pubnub.unsubscribe({
+        channels: [$scope.gameState.game_id]
+      });
+    }
+
     // Join from gameId provided by user
     $scope.joinGame = function () {
+      cancelUpdates();
       var gameId = appService.gameState.game_id;
       appService.gameState = null;
       join(gameId);
@@ -110,8 +146,28 @@ angular.module('starter.controllers', [])
 
     // Create new game
     $scope.newGame = function () {
+      cancelUpdates();
       appService.gameState = null;
       create();
+    }
+
+    $scope.rollDice = function () {
+      var payload = {
+        user: appService.user,
+        game_id: $scope.gameState.game_id
+      };
+      monopolyService.rollDice(payload)
+        .success(function (data) {
+          console.log(data);
+
+          if (data.status == 'success') {
+            appService.gameState = data.game_state;
+            $scope.gameState = data.game_state;
+          }
+        })
+        .error(function (error) {
+          console.log(error);
+        });
     }
 
     $scope.authenticate = function (provider) {
