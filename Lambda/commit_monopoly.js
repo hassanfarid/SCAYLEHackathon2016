@@ -106,6 +106,7 @@ var MonopolyDB = function() {
 var Monopoly = function() {
 
     const MAX_USER_PER_BOARD = 4;
+    const MAX_DICE_VALUE = 3;
     const MAX_PLACES_ON_BOARD = 16;
     var userColors = ["yellow", "green", "red", "blue"];
     var currentGameState = {
@@ -383,13 +384,12 @@ var Monopoly = function() {
         if (!validateTurn(user))
             return false;
 
-        currentGameState.user[user].position += 1;
+        var diceRoll = (parseInt(Math.random()*10000) % MAX_DICE_VALUE) + 1;
+
+        currentGameState.user[user].position += diceRoll;
         currentGameState.user[user].position %= MAX_PLACES_ON_BOARD;
-        currentGameState.user[user].cash -= 1;
-        console.log('Turn: ', currentGameState.turn);
-        console.log('User: ', user);
+        currentGameState.user[user].cash -= diceRoll;
         currentGameState.turn = getNextTurnUser(user);
-        console.log('Turn: ', currentGameState.turn);
 
         return true;
     }
