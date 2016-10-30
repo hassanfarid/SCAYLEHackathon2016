@@ -44,15 +44,15 @@ var MonopolyDB = function() {
 
     var DB_operation_completed = false;
     var DB_operation_success = false;
-    var TableName_Boards = "test_boards";    
+    var TableName_Boards = "boards_table";    
     var params = {
         insert: {
             TableName: "test_boards",
-            Item: {board_id:""},
+            Item: {game_id:""},
         },
         select: {
             TableName: "test_boards",
-            KeyConditionExpression: "board_id = :val",
+            KeyConditionExpression: "game_id = :val",
             ExpressionAttributeValues: {
                 ":val": ""
             }
@@ -96,10 +96,10 @@ var MonopolyDB = function() {
     var updateGame = function(Item) {
         createGame(Item);
     }
-    var queryGame = function(board_id, callback_func) {
+    var queryGame = function(game_id, callback_func) {
         reset();
 
-        params.select.ExpressionAttributeValues = {":val": board_id};
+        params.select.ExpressionAttributeValues = {":val": game_id};
         params.select.TableName = TableName_Boards;
         dynamo.query(params.select, callback_func ? callback_func : DB_requestCallback);
 
@@ -123,9 +123,10 @@ var Monopoly = function() {
     const MAX_USER_PER_BOARD = 4;
     const MAX_DICE_VALUE = 3;
     const MAX_PLACES_ON_BOARD = 16;
+    var USER_START_CASH = 50000;
     var userColors = ["yellow", "green", "red", "blue"];
     var currentGameState = {
-        "board_id": "581274e5e8841a5d34292af1",
+        "game_id": "581274e5e8841a5d34292af1",
         "status": "in-play",
         "turn": 0,
         "view": "player",
@@ -333,13 +334,17 @@ var Monopoly = function() {
         var len = currentGameState.user.length;
         return parseInt((user_turn + 1) % len);
     }
+    var userExist = function(user_obj) {
+        return (getUserIndex(user_obj.user)>=0);
+    }
 
     var saveToDB = function() {
         MonopolyDB.create(currentGameState, null);
     }
 
     var createNewGame = function(game_id) {
-        currentGameState.board_id = game_id;
+        //USER_START_CASH = start_cash;
+        currentGameState.game_id = game_id;
         currentGameState.user = [];
         return true;
     }
@@ -363,6 +368,8 @@ var Monopoly = function() {
     var addUserFunction = function(user_obj) {
         if (!validateUser(user_obj))
             return false;
+        if (userExist(user_obj))
+            return false;
         
         var nUsers = currentGameState.user.length;
         if (MAX_USER_PER_BOARD <= nUsers)
@@ -373,7 +380,7 @@ var Monopoly = function() {
             "position": 0,
             "hash": user_obj.user,
             "color": userColors[nUsers],
-            "cash": 500000
+            "cash": USER_START_CASH
         };
         currentGameState.user.push(user_item);
         return true;
@@ -409,6 +416,7 @@ var Monopoly = function() {
         return true;
     }
 
+    var full = function() { return MAX_USER_PER_BOARD == currentGameState.user.length;}
     var getGameState = function() { return currentGameState;}
     return {
         create: createNewGame,
@@ -421,7 +429,11 @@ var Monopoly = function() {
 
         move: makeMove,
 
-        state: getGameState
+        state: getGameState,
+
+        fullOnCapacity: full,
+
+        exist: userExist
     }
 }();
 
@@ -500,12 +512,18 @@ var Request = function() {
                 status: "error",
                 message: "Unable to init game"
             };
-        if (!Monopoly.addUser(payload))
+        if (!Monopoly.addUser(payload)) {
+            var state = Monopoly.state();
+            if (Monopoly.fullOnCapacity() && !Monopoly.exist(payload))
+                state.view = "spectator";
             return {
                 status: "error",
+                game_state: state,
                 message: "Unable to add new user"
             };
+        }
         Monopoly.save();
+        publishToPubnub(payload.game_id, JSON.stringify(Monopoly.state()));
 
         return {
             status: "success",
@@ -573,7 +591,7 @@ exports.handler = (event, context, callback) => {
         body: err ? JSON.stringify(err) : JSON.stringify(res),
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': '*'
         },
     });
     if (event.body) {
@@ -582,8 +600,8 @@ exports.handler = (event, context, callback) => {
         {
             console.log('Prefetch from DB');
             var params = {
-                TableName: "test_boards",
-                KeyConditionExpression: "board_id = :val",
+                TableName: "boards_table",
+                KeyConditionExpression: "game_id = :val",
                 ExpressionAttributeValues: {
                     ":val": body.game_id
                 }
@@ -617,7 +635,7 @@ var handlerNext = function(event, context, callback) {
         body: err ? JSON.stringify(err) : JSON.stringify(res),
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': '*'
         },
     });
 
