@@ -1,0 +1,22 @@
+<ion-view view-title="Monopoly">
+	<ion-content class="padding">
+		<div class="row">
+			<label class="item item-input">
+                <input type="text" placeholder="First Name" />
+            </label>
+			<button ng-click="play" class="button button-positive icon-left ion-social-facebook">Play Now</button>
+
+			<div class="row responsive-sm">
+				<button ng-click="authenticate('facebook')" class="button button-positive icon-left ion-social-facebook">Sign in with Facebook</button>
+				<button ng-click="authenticate('google')" disabled class="button button-assertive icon-left ion-social-googleplus">Sign in with Google</button>
+				<button ng-click="authenticate('github')" disabled class="button button-balanced icon-left ion-social-github">Sign in with GitHub</button>
+				<button ng-click="authenticate('linkedin')" disabled class="button button-positive icon-left ion-social-linkedin">Sign in with LinkedIn</button>
+				<button ng-click="authenticate('instagram')" disabled class="button button-balanced icon-left ion-social-instagram">Sign in with Instagram</button>
+				<button ng-click="authenticate('twitter')" disabled class="button button-balanced icon-left ion-social-twitter">Sign in with Twitter</button>
+				<button ng-click="authenticate('foursquare')" disabled class="button button-positive icon-left ion-social-foursquare">Sign in with Foursquare</button>
+			</div>
+
+		</div>
+
+	</ion-content>
+</ion-view>
