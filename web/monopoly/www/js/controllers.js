@@ -1,6 +1,11 @@
 angular.module('starter.controllers', [])
 
   .controller('ParentCtrl', function ($scope, appService) {
+
+    $scope.appService = function(){
+      return appService;
+    }
+
     if (appService.firstLoad) {
 
       var appServiceToString;
@@ -32,7 +37,7 @@ angular.module('starter.controllers', [])
         }
       } else {
         // Encrypting and then saving to the session storage
-        appService.user = { user: 'guest' + Date.now() };
+        appService.user = 'guest' + Date.now();
         appServiceToString = JSON.stringify(appService);
         encrypted = CryptoJS.AES.encrypt(appServiceToString, appService.key);
         sessionStorage.appServiceVariables = encrypted.toString();
@@ -63,11 +68,14 @@ angular.module('starter.controllers', [])
     }
     else {
       console.log("Joining existing game");
-      join(appService.gameState.board_id);
+      join(appService.gameState.game_id);
     }
 
     function create() {
-      monopolyService.createGame(appService.user)
+      var payload = {
+        user: appService.user
+      }
+      monopolyService.createGame(payload)
         .success(function (data) {
           console.log(data);
           appService.gameState = data.game_state;
@@ -95,7 +103,9 @@ angular.module('starter.controllers', [])
 
     // Join from gameId provided by user
     $scope.joinGame = function () {
-
+      var gameId = appService.gameState.game_id;
+      appService.gameState = null;
+      join(gameId);
     }
 
     // Create new game
