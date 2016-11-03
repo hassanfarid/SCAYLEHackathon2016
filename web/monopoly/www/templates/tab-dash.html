@@ -354,8 +354,41 @@
 				<button ng-click="joinGame()" class="button button-positive icon-left ion-ios-bolt">Join Game</button>
 				<button ng-click="newGame()" class="button button-assertive icon-left ion-ios-refresh">New Game</button>
 			</div>
+			<div class="col col-10">
+				<div>
+					You are:
+					<span ng-show="gameState.user[0].hash == appService().user">
+					<i class="icon ion-model-s positive"></i>
+				</span>
+					<span ng-show="gameState.user[1].hash == appService().user">
+					<i class="icon ion-model-s balanced"></i>
+				</span>
+					<span ng-show="gameState.user[2].hash == appService().user">
+					<i class="icon ion-model-s assertive"></i>
+				</span>
+					<span ng-show="gameState.user[3].hash == appService().user">
+					<i class="icon ion-model-s dark"></i>
+				</span>
+				</div>
+				<div>
+					Turn:
+					<span ng-show="gameState.turn==0">
+					<i class="icon ion-model-s positive"></i>
+				</span>
+					<span ng-show="gameState.turn==1">
+					<i class="icon ion-model-s balanced"></i>
+				</span>
+					<span ng-show="gameState.turn==2">
+					<i class="icon ion-model-s assertive"></i>
+				</span>
+					<span ng-show="gameState.turn==3">
+					<i class="icon ion-model-s dark"></i>
+				</span>
+				</div>
+			</div>
 			<div class="col">
-				<button ng-click="rollDice()" class="button button-balanced icon-left ion-ios-keypad">Roll Dice</button>
+				<button ng-click="rollDice()" class="button button-balanced icon-left ion-ios-keypad" ng-show="gameState.user[gameState.turn].hash == appService().user" ng-disabled="asyncTaskInProgress" in-progress="asyncTaskInProgress">Roll Dice</button>
+				<button disabled="true" class="button button-balanced icon-left ion-android-time" ng-show="gameState.user[gameState.turn].hash != appService().user" in-progress="asyncTaskInProgress">Wait for Turn</button>
 			</div>
 		</div>
 

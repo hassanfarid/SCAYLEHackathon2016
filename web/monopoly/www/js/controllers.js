@@ -61,6 +61,7 @@ angular.module('starter.controllers', [])
     console.log(appService.user);
 
     $scope.gameState = {};
+    $scope.asyncTaskInProgress = false;
 
     // Start game if not yet started
     if (appService.gameState == null) {
@@ -75,6 +76,7 @@ angular.module('starter.controllers', [])
       var payload = {
         user: appService.user
       }
+      $scope.asyncTaskInProgress = true;
       monopolyService.createGame(payload)
         .success(function (data) {
           console.log(data);
@@ -84,6 +86,9 @@ angular.module('starter.controllers', [])
         })
         .error(function (error) {
           console.log(error);
+        })
+        .finally(function () {
+          $scope.asyncTaskInProgress = false;
         });
     }
 
@@ -92,6 +97,7 @@ angular.module('starter.controllers', [])
         user: appService.user,
         game_id: gameId
       };
+      $scope.asyncTaskInProgress = true;
       monopolyService.joinGame(payload)
         .success(function (data) {
           console.log(data);
@@ -101,6 +107,9 @@ angular.module('starter.controllers', [])
         })
         .error(function (error) {
           console.log(error);
+        })
+        .finally(function () {
+          $scope.asyncTaskInProgress = false;
         });
     }
 
@@ -115,13 +124,15 @@ angular.module('starter.controllers', [])
         channel: $scope.gameState.game_id,
         message: function (m) {
           var temp = angular.fromJson(m);
-          $scope.gameState = temp;
-          appService.gameState = angular.copy($scope.gameState);
-          console.log($scope.gameState);
+
+          $scope.$apply(function () {
+            $scope.gameState = angular.copy(temp);
+            appService.gameState = angular.copy(temp);
+          });
         },
         error: function (error) {
           // Handle error here
-          console.log(JSON.stringify(error));
+          console.log("error = " + JSON.stringify(error));
         }
       });
 
@@ -160,6 +171,7 @@ angular.module('starter.controllers', [])
         user: appService.user,
         game_id: $scope.gameState.game_id
       };
+      $scope.asyncTaskInProgress = true;
       monopolyService.rollDice(payload)
         .success(function (data) {
           console.log(data);
@@ -171,6 +183,9 @@ angular.module('starter.controllers', [])
         })
         .error(function (error) {
           console.log(error);
+        })
+        .finally(function () {
+          $scope.asyncTaskInProgress = false;
         });
     }
 
