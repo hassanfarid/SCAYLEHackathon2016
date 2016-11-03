@@ -115,7 +115,8 @@ angular.module('starter.controllers', [])
 
     Pubnub.init({
       publish_key: 'pub-c-82772049-53f1-4515-8458-65e353717814',
-      subscribe_key: 'sub-c-1ac7aae8-9ea9-11e6-a0c0-0619f8945a4f'
+      subscribe_key: 'sub-c-1ac7aae8-9ea9-11e6-a0c0-0619f8945a4f',
+      ssl : (('https:' == document.location.protocol) ? true : false)
     });
 
     function subscribeUpdates() {
