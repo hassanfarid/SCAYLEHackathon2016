@@ -78,8 +78,8 @@ angular.module('starter.controllers', [])
       monopolyService.createGame(payload)
         .success(function (data) {
           console.log(data);
-          appService.gameState = data.game_state;
-          $scope.gameState = data.game_state;
+          appService.gameState = angular.copy(data.game_state);
+          $scope.gameState = angular.copy(data.game_state);
           subscribeUpdates();
         })
         .error(function (error) {
@@ -95,7 +95,8 @@ angular.module('starter.controllers', [])
       monopolyService.joinGame(payload)
         .success(function (data) {
           console.log(data);
-          $scope.gameState = data.game_state;
+          $scope.gameState = angular.copy(data.game_state);
+          appService.gameState = angular.copy(data.game_state);
           subscribeUpdates();
         })
         .error(function (error) {
@@ -115,6 +116,7 @@ angular.module('starter.controllers', [])
         message: function (m) {
           var temp = angular.fromJson(m);
           $scope.gameState = temp;
+          appService.gameState = angular.copy($scope.gameState);
           console.log($scope.gameState);
         },
         error: function (error) {
@@ -132,8 +134,9 @@ angular.module('starter.controllers', [])
     }
 
     function cancelUpdates() {
+      console.log('cancel = ' + appService.gameState.game_id);
       Pubnub.unsubscribe({
-        channels: [$scope.gameState.game_id]
+        channel: [appService.gameState.game_id]
       });
     }
 
