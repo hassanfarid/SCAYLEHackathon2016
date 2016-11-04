@@ -1,6 +1,21 @@
 <ion-view view-title="Monopoly">
 	<ion-content class="padding">
-		<div class="row">
+        <div ng-if="!isAuthenticated() && useAuthentication">
+          <button ng-click="authenticate('facebook')" class="button button-block icon-left ion-social-facebook">
+            Sign in with Facebook
+          </button>
+        </div>
+        <div ng-if="isAuthenticated() && useAuthentication">
+          <div class="card">
+            <div class="item item-text-wrap">
+              You are currently logged in.
+            </div>
+          </div>
+          <button ng-click="logout()" class="button button-block">
+            Log Out
+          </button>
+        </div>
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<div class="item item-divider calm">
 					Jail
@@ -100,7 +115,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<div class="item item-divider red">
 					<i class="icon ion-android-star"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
@@ -142,7 +157,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<div class="item item-divider red">
 					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i><i class="icon ion-android-star"></i>
@@ -200,7 +215,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<div class="item item-divider red">
 					<i class="icon ion-android-star-outline"></i><i class="icon ion-android-star-outline"></i><i class="icon ion-android-star"></i>
@@ -242,7 +257,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<div class="item item-divider calm">
 					Go Jail
@@ -343,7 +358,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div ng-if="isAuthenticated() || !useAuthentication" class="row">
 			<div class="col">
 				<label class="item item-input">
 					<span class="input-label">GameId (Share)</span>

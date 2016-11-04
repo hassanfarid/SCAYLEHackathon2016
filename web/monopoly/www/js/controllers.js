@@ -56,9 +56,9 @@ angular.module('starter.controllers', [])
 
   // Actual Monopoly Board Controller
   .controller('DashCtrl', function ($rootScope, $scope, $ionicAuth, $ionicUser, $auth, monopolyService, $stateParams, appService, Pubnub) {
-    console.log($auth.isAuthenticated());
+    console.log('Authenticated? :',$auth.isAuthenticated());
     console.log(angular.toJson($auth.getPayload()));
-    console.log(appService.user);
+    console.log('User: ', appService.user);
 
     $scope.gameState = {};
     $scope.asyncTaskInProgress = false;
@@ -189,9 +189,25 @@ angular.module('starter.controllers', [])
           $scope.asyncTaskInProgress = false;
         });
     }
+    
+    $scope.useAuthentication = false;
 
     $scope.authenticate = function (provider) {
-      $auth.authenticate(provider);
+      $auth.authenticate(provider)
+        .then(function() {
+          console.log('You have successfully logged in!');
+        })
+        .catch(function(error) {
+          console.log(error.message || (error.data && error.data.message) || error);
+        });
+    };
+    
+    $scope.logout = function() {
+      $auth.logout();
+    };
+
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
     };
   })
 
