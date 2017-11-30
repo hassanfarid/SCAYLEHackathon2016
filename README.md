@@ -15,24 +15,21 @@
 
 <h3><strong>Repository Content:</strong></h3>
 
-<ul>
-	<li><strong>Server Side</strong>
+*  Backend (Server-less)
+   *  [AWS Lambda Function](./Lambda)
+   *  Exposed with AWS API Gateway
+   *  Integrated with Pubnub for realtime communication
+<p>&nbsp;</p>
 
-	<ul>
-		<li>HFarid/Lambda/</li>
-	</ul>
-	</li>
-</ul>
+*  Frontend (cross platofrm)
+   *  [Ionic based web application](./web)
+   *  Integrated with Pubnub for realtime communication
 
 <p>&nbsp;</p>
 
-<ul>
-	<li><strong>Client Side</strong>
+### Application architecture details:
+Look at [this documentation](./docs/Monopoly.pdf).
 
-	<ul>
-		<li><strong>​​​​​​​</strong>HFarid/web/</li>
-	</ul>
-	</li>
-</ul>
+### Application demo:
+Look at [this demo](./docs/MonopolyDemo.mp4).
 
-<p>&nbsp;</p>
