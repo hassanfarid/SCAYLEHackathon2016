@@ -1,5 +1,6 @@
 <h1><strong>Monopoly Game</strong></h1>
 
+<p>A scalable implementation of realtime, multi-player game.</p>
 <p>This project is created in SCAYLE hackathon.</p>
 
 <p>&nbsp;</p>
